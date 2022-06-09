@@ -23,7 +23,4 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-characteristic_reviews.csv
-characteristics.csv
-reviews_photos.csv
-reviews.csv
+reviewsCSV
