@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express');
-const client = require('./postgres/index.js');
+const client = require('../postgres/qanda/connection.js');
 const app = express();
 
 app.use(express.json());
@@ -18,5 +18,3 @@ app.listen(PORT, () => {
 });
 
 client.connect();
-
-// Hello, delete me.
