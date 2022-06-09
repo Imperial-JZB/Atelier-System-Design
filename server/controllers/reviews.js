@@ -3,13 +3,35 @@ const model = require('../models/reviews.js');
 require("dotenv").config();
 
 module.exports = {
-  put: function (req, res) {
+  helpful: function (req, res) {
     model.updateHelpful((err, results) => {
+      console.log(req.body)
       if (err) {
-        res.sendStatus(404)
+        res.sendStatus(404);
       } else {
-        res.status(200).send(results.rows);
+        res.status(201).send('UPDATED');
       }
     })
   },
+
+  report: function (req, res) {
+    model.updateReport((err, results) => {
+      if (err) {
+        res.sendStatus(404);
+      } else {
+        res.status(201).send('UPDATED');
+      }
+    })
+  },
+
+  addReview: function (req, res) {
+    model.addReview((err, results) => {
+      if (err) {
+        res.sendStatus(404);
+      } else {
+        res.status(201).send('Posted')
+      }
+    })
+  }
+
 }
