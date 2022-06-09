@@ -1,8 +1,10 @@
--- DROP DATABASE IF EXISTS qanda;
+DROP DATABASE IF EXISTS qanda WITH (FORCE);
 
--- CREATE DATABASE IF NOT EXISTS qanda;
+CREATE DATABASE qanda;
 
--- USE DATABASE qanda;
+\c
+
+DROP TABLE IF EXISTS products, questions, answers, answer_photos;
 
 CREATE TABLE products(
   product_id INT NOT NULL PRIMARY KEY,
@@ -46,22 +48,11 @@ CREATE TABLE answer_photos(
   FOREIGN KEY(answer_id) references answers(answer_id)
 );
 
--- [{
---         "question_id": 37,
---         "question_body": "Why is this product cheaper here than other sites?",
---         "question_date": "2018-10-18T00:00:00.000Z",
---         "asker_name": "williamsmith",
---         "question_helpfulness": 4,
---         "reported": false,
---         "answers": {
---           68: {
---             "id": 68,
---             "body": "We are selling it here without any markup from the middleman!",
---             "date": "2018-08-18T00:00:00.000Z",
---             "answerer_name": "Seller",
---             "helpfulness": 4,
---             "photos": []
---             // ...
---           }
---         }
---       }
+
+COPY products(product_id, product_name, slogan, description, category, default_price) FROM '/Users/brianbui/Desktop/HR Sprints/SDC/data/product.csv' DELIMITER ',' CSV header;
+
+COPY questions(question_id, product_id , question_body, question_date, asker_name, asker_email, reported, question_helpfulness) FROM '/Users/brianbui/Desktop/HR Sprints/SDC/data/questions.csv' DELIMITER ',' CSV header;
+
+COPY answers(answer_id, question_id , body, date, answerer_name, answerer_email, reported, helpfulness) FROM '/Users/brianbui/Desktop/HR Sprints/SDC/data/answers.csv' DELIMITER ',' CSV header;
+
+COPY answer_photos(answer_photos_id, answer_id, url) FROM '/Users/brianbui/Desktop/HR Sprints/SDC/data/answers_photos.csv' DELIMITER ',' CSV header;

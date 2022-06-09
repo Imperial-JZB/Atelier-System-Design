@@ -15,7 +15,6 @@ app.get('/hello', (req, res) => {
   res.send('Hello World!')
 })
 
-// doesn't work
 app.put('/reviews', controller.reviews.put);
 
 app.listen(PORT, () => {
