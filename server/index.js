@@ -18,5 +18,3 @@ app.listen(PORT, () => {
 });
 
 client.connect();
-
-// Hello, delete me.
