@@ -10,8 +10,8 @@ DROP TABLE IF EXISTS characteristic_reviews, characteristics, reviews_photos, re
 -- id,characteristic_id,review_id,value
 CREATE TABLE IF NOT EXISTS characteristic_reviews (
   id INTEGER UNIQUE PRIMARY KEY NOT NULL,
-  characteristic_id INTEGER NOT NULL,
-  review_id INTEGER NOT NULL,
+  characteristic_id INTEGER NOT NULL references characteristic(id),
+  review_id INTEGER NOT NULL references review(id),
   value INTEGER NOT NULL
 );
 
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS characteristics (
 --id,review_id,url
 CREATE TABLE IF NOT EXISTS reviews_photos (
   id INTEGER UNIQUE PRIMARY KEY NOT NULL,
-  review_id INTEGER NOT NULL,
+  review_id INTEGER NOT NULL references review(id),
   url VARCHAR(225) NOT NULL
 );
 
