@@ -14,4 +14,19 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+  post: async (req, res) => {
+    try {
+      const {
+        body, name, email, product_id: productId,
+      } = req.body;
+      const bodyParams = {
+        body, name, email, productId,
+      };
+
+      const { results } = await model.questions.postQuestions(bodyParams);
+      res.status(200).send(results);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
 };

@@ -1,7 +1,7 @@
 const db = require('../../postgres');
 
 module.exports = {
-  getQuestions: async ({ productId, page, count }) => {
+  getQuestions: ({ productId, page, count }) => {
     const offset = (page - 1) * count;
 
     const queryString = `
@@ -35,10 +35,20 @@ module.exports = {
       GROUP BY q.product_id
       LIMIT $2
       OFFSET $3`;
-    // We are in the questions table, where theres a unique question so just one of
-    // each but multiple ones with the same product id, and we want to find
-    // info about a certain product_id, so we have to group
-    // Show the product_id column, and do an aggregate function WHERE product_id = $1
+      // We are in the questions table, where theres a unique question so just one of
+      // each but multiple ones with the same product id, and we want to find
+      // info about a certain product_id, so we have to group
+      // Show the product_id column, and do an aggregate function WHERE product_id = $1
     return db.query(queryString, [productId, count, offset]);
   },
+  postQuestions: ({ body, name, email, productId }) => {
+    const queryString = `
+    INSERT INTO questions
+    (question_body, asker_name, asker_email, product_id)
+    VALUES ($1, $2, $3, $4)
+    `;
+
+    return db.query(queryString, [body, name, email, productId]);
+  },
 };
+//INSERT INTO users (first_name, last_name, email, password, location, dept, is_admin, register_date) values ('Brad', 'Traversy', 'brad@gmail.com', '123456','Massachusetts', 'development', 1, now());

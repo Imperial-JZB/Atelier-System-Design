@@ -23,11 +23,12 @@ module.exports = {
           )
         ) as results
     FROM answers AS a
-    WHERE question_id = 1
+    WHERE question_id = $1
     GROUP BY a.question_id
+    OFFSET $2
+    LIMIT $3
     `;
 
     return db.query(queryString, [questionId, offset, count]);
   },
 };
-//a.question_id

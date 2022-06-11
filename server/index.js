@@ -20,7 +20,7 @@ app.put('/reviews', controller.reviews.put);
 
 // Q and A Routes
 app.get('/qa/questions', controller.questions.get);
-// app.post('/qa/questions', controller.questions.post);
+app.post('/qa/questions', controller.questions.post);
 
 app.get('/qa/questions/:question_id/answers', controller.answers.get);
 // app.post('/qa/questions/:question_id/answers', controller.answers.post);
