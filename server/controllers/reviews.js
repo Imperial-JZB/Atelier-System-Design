@@ -37,17 +37,17 @@ module.exports = {
   },
 
   getMeta: function(req, res) {
+    const product_id = Number(req.query.product_id);
     model.meta((err, results) => {
       if (err) {
         res.sendStatus(404);
       } else {
-        res.status(201).send(res.data)
+        res.status(201).send(results.rows);
       }
-    })
+    }, product_id)
   },
 
   getReviews: function(req, res) {
-    console.log(req.query)
     const config = {
       product_id: Number(req.query.product_id),
       count: req.query.count,
@@ -58,7 +58,7 @@ module.exports = {
       if (err) {
         res.sendStatus(404);
       } else {
-        res.status(201).send(results)
+        res.status(201).send(results.rows)
       }
     }, config.product_id, config.count, config.page)
   },
