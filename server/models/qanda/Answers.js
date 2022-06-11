@@ -5,8 +5,7 @@ module.exports = {
     const offset = (page - 1) * count;
 
     const queryString = `
-    SELECT a.question_id AS question, COUNT(*),
-    (SELECT json_agg (
+    SELECT json_agg (
       json_build_object (
         'answer_id', a.answer_id,
         'body', a.body,
@@ -21,7 +20,7 @@ module.exports = {
           FROM answer_photos as ap
           WHERE answer_id = a.answer_id )
           )
-        )) as results
+        ) as results
     FROM answers AS a
     WHERE question_id = $1
     GROUP BY a.question_id
