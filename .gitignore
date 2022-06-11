@@ -23,18 +23,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-<<<<<<< HEAD
 characteristic_reviews.csv
 characteristics.csv
 reviews_photos.csv
 reviews.csv
 
 csvFiles
-||||||| 7bfff8e
-characteristic_reviews.csv
-characteristics.csv
-reviews_photos.csv
-reviews.csv
-=======
 reviewsCSV
->>>>>>> main
