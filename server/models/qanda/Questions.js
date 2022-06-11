@@ -26,7 +26,7 @@ module.exports = {
         FROM answer_photos AS ap
         WHERE answer_id = a.answer_id ))) as answers
         FROM answers AS a
-        WHERE question_id = q.question_id
+        WHERE question_id = q.question_id AND reported < 1
         )
        )
       )) as results

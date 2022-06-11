@@ -18,14 +18,14 @@ module.exports = {
             'url', ap.url
           ))
           FROM answer_photos as ap
-          WHERE answer_id = a.answer_id )
+          WHERE answer_id = a.answer_id AND reported < 1
+            )
           )
         ) as results
     FROM answers AS a
-    WHERE question_id = $1
+    WHERE question_id = 1
     GROUP BY a.question_id
-    OFFSET $2
-    LIMIT $3`;
+    `;
 
     return db.query(queryString, [questionId, offset, count]);
   },
