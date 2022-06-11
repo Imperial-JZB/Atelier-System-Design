@@ -1,3 +1,6 @@
-exports.overview = require('./overview.js');
-exports.qanda = require('./qanda.js');
-exports.reviews = require('./reviews.js');
+exports.overview = require('./overview');
+exports.reviews = require('./reviews');
+
+// Q and A
+exports.questions = require('./qanda/questions');
+exports.answers = require('./qanda/answers');
