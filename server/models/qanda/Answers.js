@@ -31,4 +31,25 @@ module.exports = {
 
     return db.query(queryString, [questionId, offset, count]);
   },
+  postAnswer: ({ questionId, body, name, email }) => {
+    const queryString = `
+      INSERT INTO answers (question_id, body, answerer_name, answerer_email, answer_id)
+      VALUES ($1, $2, $3, $4,
+        (SELECT setval('answers_answer_id_seq',
+        (SELECT MAX(answer_id + 1) FROM "answers")
+      ))
+    ) RETURNING answer_id
+    `;
+
+    return db.query(queryString, [questionId, body, name, email]);
+  },
 };
+// answer_id SERIAL PRIMARY KEY,
+// question_id INT NOT NULL,
+// body TEXT,
+// date VARCHAR(20),
+// answerer_name VARCHAR(50),
+// answerer_email VARCHAR(50),
+// reported INT DEFAULT 0,
+// helpfulness INT DEFAULT 0,
+// FOREIGN KEY(question_id) references questions(question_id)

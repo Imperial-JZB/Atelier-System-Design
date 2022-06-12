@@ -7,7 +7,7 @@
 DROP TABLE IF EXISTS products, questions, answers, answer_photos;
 
 CREATE TABLE products(
-  product_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  product_id SERIAL PRIMARY KEY,
   product_name VARCHAR(30) NOT NULL,
   slogan VARCHAR(300),
   description VARCHAR(500),
@@ -16,7 +16,7 @@ CREATE TABLE products(
 );
 
 CREATE TABLE questions(
-  question_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  question_id SERIAL PRIMARY KEY,
   product_id INT NOT NULL,
   question_body TEXT NOT NULL,
   question_date VARCHAR(20),
@@ -29,7 +29,7 @@ CREATE TABLE questions(
 
 
 CREATE TABLE answers(
-  answer_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  answer_id SERIAL PRIMARY KEY,
   question_id INT NOT NULL,
   body TEXT,
   date VARCHAR(20),
@@ -41,7 +41,7 @@ CREATE TABLE answers(
 );
 
 CREATE TABLE answer_photos(
-  answer_photos_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  answer_photos_id SERIAL PRIMARY KEY,
   url VARCHAR(300),
   answer_id INT NOT NULL,
   FOREIGN KEY(answer_id) references answers(answer_id)

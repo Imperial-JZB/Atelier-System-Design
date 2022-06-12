@@ -44,11 +44,14 @@ module.exports = {
   postQuestions: ({ body, name, email, productId }) => {
     const queryString = `
     INSERT INTO questions
-    (question_body, asker_name, asker_email, product_id)
-    VALUES ($1, $2, $3, $4)
+    (question_body, asker_name, asker_email, product_id, question_id)
+    VALUES ($1, $2, $3, $4,
+      (SELECT setval('questions_question_id_seq',
+      (SELECT MAX(question_id + 1) FROM "questions")
+      ))
+     )
     `;
-
+    console.log(body, ' body', name, 'name', email, 'email', productId, 'productId')
     return db.query(queryString, [body, name, email, productId]);
   },
 };
-//INSERT INTO users (first_name, last_name, email, password, location, dept, is_admin, register_date) values ('Brad', 'Traversy', 'brad@gmail.com', '123456','Massachusetts', 'development', 1, now());

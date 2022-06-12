@@ -23,8 +23,8 @@ module.exports = {
         body, name, email, productId,
       };
 
-      const { results } = await model.questions.postQuestions(bodyParams);
-      res.status(200).send(results);
+      await model.questions.postQuestions(bodyParams);
+      res.status(200).send({ success: 'Post was successful' });
     } catch (err) {
       res.status(400).send(err);
     }
