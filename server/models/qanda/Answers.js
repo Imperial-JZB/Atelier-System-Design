@@ -43,6 +43,22 @@ module.exports = {
 
     return db.query(queryString, [questionId, body, name, email]);
   },
+  incrementAnsHelpfulness: (answerId) => {
+    const queryString = `
+    UPDATE answers
+      SET helpfulness = helpfulness + 1
+    WHERE answer_id = $1
+    `;
+    return db.query(queryString, [answerId]);
+  },
+  reportAns: (answerId) => {
+    const queryString = `
+    UPDATE answers
+      SET reported = reported + 1
+    WHERE answer_id = $1
+    `;
+    return db.query(queryString, [answerId]);
+  },
 };
 // answer_id SERIAL PRIMARY KEY,
 // question_id INT NOT NULL,

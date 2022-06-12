@@ -59,7 +59,15 @@ module.exports = {
       SET question_helpfulness = question_helpfulness + 1
     WHERE question_id = $1
     `;
-
     return db.query(queryString, [questionId]);
   },
+  reportQuestion: (questionId) => {
+    const queryString = `
+    UPDATE questions
+      SET reported = reported + 1
+    WHERE question_id = $1
+    `;
+    return db.query(queryString, [questionId]);
+  },
+
 };

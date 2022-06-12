@@ -38,4 +38,13 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+  report: async (req, res) => {
+    try {
+      const questionId = Number(req.params.question_id);
+      await model.questions.reportQuestion(questionId);
+      res.status(200).send({ success: 'Question has been reported' });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
 };

@@ -40,4 +40,22 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+  updateAnsHelpfulness: async (req, res) => {
+    try {
+      const answerId = Number(req.params.answer_id);
+      await model.answers.incrementAnsHelpfulness(answerId);
+      res.status(200).send({ success: 'Answer has increased in helpfulness' });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+  report: async (req, res) => {
+    try {
+      const answerId = Number(req.params.answer_id);
+      await model.answers.reportAns(answerId);
+      res.status(200).send({ success: 'Answer has been reported' });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
 };
