@@ -19,9 +19,13 @@ app.get('/hello', (req, res) => {
 app.put('/reviews', controller.reviews.put);
 
 // Q and A Routes
+
+// Questions
 app.get('/qa/questions', controller.questions.get);
 app.post('/qa/questions', controller.questions.post);
+app.put('/qa/questions/:question_id/helpful', controller.questions.updateHelpfulness);
 
+// Answers
 app.get('/qa/questions/:question_id/answers', controller.answers.get);
 app.post('/qa/questions/:question_id/answers', controller.answers.post);
 

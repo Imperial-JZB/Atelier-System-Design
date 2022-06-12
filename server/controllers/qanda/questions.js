@@ -29,4 +29,13 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+  updateHelpfulness: async (req, res) => {
+    try {
+      const questionId = Number(req.params.question_id);
+      await model.questions.incrementHelpfulness(questionId);
+      res.status(200).send({ success: 'Question has increased in helpfulness' });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
 };

@@ -51,7 +51,15 @@ module.exports = {
       ))
      )
     `;
-    console.log(body, ' body', name, 'name', email, 'email', productId, 'productId')
     return db.query(queryString, [body, name, email, productId]);
+  },
+  incrementHelpfulness: (questionId) => {
+    const queryString = `
+    UPDATE questions
+      SET question_helpfulness = question_helpfulness + 1
+    WHERE question_id = $1
+    `;
+
+    return db.query(queryString, [questionId]);
   },
 };
