@@ -3,8 +3,7 @@ DROP DATABASE IF EXISTS products WITH (FORCE);
 CREATE DATABASE products;
 
 DROP TABLE IF EXISTS products, features, styles, related, skus, photos;
--- DROP TABLE IF EXISTS styles, photos, skus;
--- DROP TABLE IF EXISTS related;
+
 CREATE TABLE IF NOT EXISTS products (
   id INTEGER UNIQUE PRIMARY KEY NOT NULL,
   name VARCHAR(64) NOT NULL,
@@ -23,7 +22,7 @@ CREATE TABLE IF NOT EXISTS features (
   value VARCHAR(64) NOT NULL
 );
 \copy features FROM '/Users/Zebib/Documents/rfp/SDC/csvFiles/features.csv' with (format csv,header true, delimiter ',');
-CREATE INDEX features_id_index ON features (id);
+CREATE INDEX features_id_index ON features (product_id);
 
 CREATE TABLE IF NOT EXISTS styles (
   id INTEGER UNIQUE PRIMARY KEY NOT NULL,
@@ -44,7 +43,6 @@ CREATE TABLE IF NOT EXISTS related (
 \copy related FROM '/Users/Zebib/Documents/rfp/SDC/csvFiles/related.csv' with (format csv,header true, delimiter ',');
 CREATE INDEX related_id_index ON related (current_product_id);
 
--- skus
 CREATE TABLE IF NOT EXISTS skus (
   id INTEGER UNIQUE PRIMARY KEY NOT NULL,
   styleId INTEGER NOT NULL,
@@ -64,5 +62,5 @@ CREATE TABLE IF NOT EXISTS photos (
 );
 \copy photos FROM '/Users/Zebib/Documents/rfp/SDC/csvFiles/photos.csv' with (format csv,header true, delimiter ',');
 CREATE INDEX photos_id_index ON photos (styleId);
--- psql -h localhost -U zebib -d test -c "\copy product FROM '/Users/Zebib/Documents/rfp/SDC/csvFiles/product.csv' with (format csv,header true, delimiter ',');"
+
 -- $ psql -h localhost -U zebib -d test -a -f /Users/Zebib/Documents/rfp/SDC/server/postgres/Products/schema.sql 
