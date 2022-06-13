@@ -2,9 +2,9 @@ DROP DATABASE IF EXISTS products WITH (FORCE);
 
 CREATE DATABASE products;
 
--- DROP TABLE IF EXISTS products, features, styles, related, skus, photos;
+DROP TABLE IF EXISTS products, features, styles, related, skus, photos;
 -- DROP TABLE IF EXISTS styles, photos, skus;
-DROP TABLE IF EXISTS related;
+-- DROP TABLE IF EXISTS styles;
 CREATE TABLE IF NOT EXISTS products (
   id INTEGER UNIQUE PRIMARY KEY NOT NULL,
   name VARCHAR(64) NOT NULL,
@@ -29,9 +29,9 @@ CREATE TABLE IF NOT EXISTS styles (
   id INTEGER UNIQUE PRIMARY KEY NOT NULL,
   product_id INTEGER NOT NULL,
   name VARCHAR(64) NOT NULL,
-  sale_price VARCHAR(32) NULL DEFAULT '0', 
+  sale_price VARCHAR(32) NOT NULL DEFAULT '0', 
   original_price VARCHAR(32) NOT NULL,
-  default_style BOOLEAN  NULL DEFAULT FALSE
+  default_style BOOLEAN NOT NULL DEFAULT FALSE
 );
 \copy styles FROM '/Users/Zebib/Documents/rfp/SDC/csvFiles/styles.csv' with (format csv,header true, delimiter ',');
 CREATE INDEX style_id_index ON styles (id);
