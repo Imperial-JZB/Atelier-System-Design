@@ -19,7 +19,7 @@ app.get('/hello', (req, res) => {
 // Ratings and Reviews
 app.put('/reviews/:review_id/helpful', controller.reviews.helpful);
 app.put('/reviews/:review_id/report', controller.reviews.report);
-app.post('/reviews', controller.reviews.addReview);
+
 app.get('/reviews/meta', controller.reviews.getMeta);
 app.get('/reviews/', controller.reviews.getReviews);
 

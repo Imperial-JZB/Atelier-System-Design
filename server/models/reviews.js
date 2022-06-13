@@ -21,16 +21,6 @@ module.exports = {
     })
   },
 
-  insertReview: function(callback) {
-    db.query('INSERT INTO reviews ', function(err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        callback(err, data);
-      }
-    })
-  },
-
   meta: function(callback, product_id) {
     db.query(`SELECT
     R.product_id,
@@ -65,7 +55,7 @@ module.exports = {
   },
 
   reviews: function(callback, product_id, count, page) {
-    db.query(`EXPLAIN (FORMAT JSON) SELECT R.*, array_to_json(RP2.url_array) AS url, TO_TIMESTAMP(R.date/1000)::date
+    db.query(`SELECT R.*, array_to_json(RP2.url_array) AS url, TO_TIMESTAMP(R.date/1000)::date
     AS review_date FROM reviews R
     INNER JOIN (
     SELECT R.id, array_agg(json_build_object('id',RP.id, 'url', RP.url))

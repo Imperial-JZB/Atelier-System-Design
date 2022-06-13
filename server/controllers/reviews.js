@@ -1,4 +1,3 @@
-// const axios = require('axios');
 const model = require('../models/reviews.js');
 require("dotenv").config();
 
@@ -24,16 +23,6 @@ module.exports = {
         res.status(201).send('UPDATED');
       }
     }, id)
-  },
-
-  addReview: function (req, res) {
-    model.addReview((err, results) => {
-      if (err) {
-        res.sendStatus(404);
-      } else {
-        res.status(201).send('Posted')
-      }
-    })
   },
 
   getMeta: function(req, res) {
