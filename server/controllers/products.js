@@ -1,37 +1,37 @@
-const model = require('../models/products.js');
+const model = require('../models/products');
 
 module.exports = {
-  getAll: function (req, res) {
+  getAll: (req, res) => {
     const { page = 2, count = 2 } = req.query;
     model.products(page, count, (err, results) => {
       if (err) {
-        res.sendStatus(404)
+        res.sendStatus(404);
       } else {
         res.status(200).send(results.rows);
       }
-    })
+    });
   },
-  getById: function(req, res) {
+  getById: (req, res) => {
     const id = req.params.product_id;
     model.productsById(id, (err, results) => {
       if (err) {
-        res.sendStatus(404)
+        res.sendStatus(404);
       } else {
         res.status(200).send(results);
       }
-    })
+    });
   },
-  getStyles: function(req, res) {
+  getStyles: (req, res) => {
     const id = req.params.product_id;
     model.productStyles(id, (err, results) => {
       if (err) {
-        res.sendStatus(404)
+        res.sendStatus(404);
       } else {
         res.status(200).send(results);
       }
-    })
+    });
   },
-  getRelatedProducts: function(req, res) {
+  getRelatedProducts: (req, res) => {
     const id = req.params.product_id;
     model.relatedProducts(id, (err, results) => {
       if (err) {
@@ -39,7 +39,6 @@ module.exports = {
       } else {
         res.status(200).send(results);
       }
-    })
+    });
   },
-}
-
+};
