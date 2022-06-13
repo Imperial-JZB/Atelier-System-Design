@@ -13,8 +13,14 @@ const PORT = port || 3000;
 const controller = require('./controllers/index');
 
 app.get('/hello', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello World!');
 });
+
+// product Routes
+app.get('/products', controller.products.getAll);
+app.get('/products/:product_id', controller.products.getById);
+app.get('/products/:product_id/styles', controller.products.getStyles);
+app.get('/products/:product_id/related', controller.products.getRelatedProducts);
 
 // Ratings and Reviews
 app.put('/reviews/:review_id/helpful', controller.reviews.helpful);
