@@ -11,7 +11,7 @@ module.exports = {
       json_build_object (
       'question_id', q.question_id,
       'question_body', q.question_body,
-      'question_date', q.question_date,
+      'question_date',(SELECT to_timestamp(q.question_date/1000)::date),
       'asker_name', q.asker_name,
       'question_helpfulness', q.question_helpfulness,
       'reported', q.reported,

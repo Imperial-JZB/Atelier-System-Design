@@ -9,7 +9,7 @@ module.exports = {
       json_build_object (
         'answer_id', a.answer_id,
         'body', a.body,
-        'date', a.date,
+        'date', (SELECT to_timestamp(a.date/1000)::date),
         'answerer_name', a.answerer_name,
         'helpfulness', a.helpfulness,
         'photos', (SELECT json_agg (
@@ -60,12 +60,4 @@ module.exports = {
     return db.query(queryString, [answerId]);
   },
 };
-// answer_id SERIAL PRIMARY KEY,
-// question_id INT NOT NULL,
-// body TEXT,
-// date VARCHAR(20),
-// answerer_name VARCHAR(50),
-// answerer_email VARCHAR(50),
-// reported INT DEFAULT 0,
-// helpfulness INT DEFAULT 0,
-// FOREIGN KEY(question_id) references questions(question_id)
+// SELECT to_timestamp(cast(q.question_date/1000 as bigint))::date

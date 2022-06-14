@@ -25,3 +25,7 @@ yarn-error.log*
 
 reviewsCSV
 data
+
+
+# test
+k6Test.js
