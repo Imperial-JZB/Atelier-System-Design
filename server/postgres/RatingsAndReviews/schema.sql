@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS reviews_photos (
 
 CREATE INDEX idx_product_id ON reviews(product_id);
 CREATE INDEX idx_characteristic_id ON characteristic_reviews(characteristic_id);
+CREATE INDEX idx_review_id on characteristic_reviews(review_id);
 CREATE INDEX idx_id ON reviews(id);
 
 COPY characteristics(id, product_id, name) FROM '/Users/johnong/galvanize/imperial-sdc/reviewsCSV/characteristics.csv' DELIMITER ',' CSV Header;
