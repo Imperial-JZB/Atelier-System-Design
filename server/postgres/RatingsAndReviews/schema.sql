@@ -54,11 +54,11 @@ CREATE INDEX idx_characteristic_id ON characteristic_reviews(characteristic_id);
 CREATE INDEX idx_review_id on characteristic_reviews(review_id);
 CREATE INDEX idx_id ON reviews(id);
 
-COPY characteristics(id, product_id, name) FROM '/Users/johnong/galvanize/imperial-sdc/reviewsCSV/characteristics.csv' DELIMITER ',' CSV Header;
+COPY characteristics(id, product_id, name) FROM '/home/ubuntu/SDC/reviewsCSVcharacteristics.csv' DELIMITER ',' CSV Header;
 
-COPY reviews(id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) FROM '/Users/johnong/galvanize/imperial-sdc/reviewsCSV/reviews.csv' DELIMITER ',' CSV Header;
+COPY reviews(id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) FROM '/home/ubuntu/SDC/reviewsCSVreviews.csv' DELIMITER ',' CSV Header;
 
-COPY characteristic_reviews(id, characteristic_id, review_id, value) FROM '/Users/johnong/galvanize/imperial-sdc/reviewsCSV/characteristic_reviews.csv' DELIMITER ',' CSV Header;
+COPY characteristic_reviews(id, characteristic_id, review_id, value) FROM '/home/ubuntu/SDC/reviewsCSVcharacteristic_reviews.csv' DELIMITER ',' CSV Header;
 
-COPY reviews_photos(id, review_id, url) FROM '/Users/johnong/galvanize/imperial-sdc/reviewsCSV/reviews_photos.csv' DELIMITER ',' CSV Header;
+COPY reviews_photos(id, review_id, url) FROM '/home/ubuntu/SDC/reviewsCSVreviews_photos.csv' DELIMITER ',' CSV Header;
 
