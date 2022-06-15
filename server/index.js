@@ -30,11 +30,18 @@ app.get('/reviews/meta', controller.reviews.getMeta);
 app.get('/reviews/', controller.reviews.getReviews);
 
 // Q and A Routes
-app.get('/qa/questions', controller.questions.get);
-// app.post('/qa/questions', controller.questions.post);
 
+// Questions
+app.get('/qa/questions', controller.questions.get);
+app.post('/qa/questions', controller.questions.post);
+app.put('/qa/questions/:question_id/helpful', controller.questions.updateHelpfulness);
+app.put('/qa/questions/:question_id/report', controller.questions.report);
+
+// Answers
 app.get('/qa/questions/:question_id/answers', controller.answers.get);
-// app.post('/qa/questions/:question_id/answers', controller.answers.post);
+app.post('/qa/questions/:question_id/answers', controller.answers.post);
+app.put('/qa/answers/:answer_id/helpful', controller.answers.updateAnsHelpfulness);
+app.put('/qa/answers/:answer_id/report', controller.answers.report);
 
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
