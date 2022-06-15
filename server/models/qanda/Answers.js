@@ -6,11 +6,11 @@ module.exports = {
     if (page > 0) {
       offset = (page - 1) * count;
     }
-    const questionIdStr = questionId.toString();
+
     const newPage = page - 1;
 
     const queryString = `
-    SELECT $3 AS question, ${newPage} AS page, ${count} AS count,
+    SELECT $1 AS question, $2::int AS page, $3::int AS count,
     (SELECT json_agg (
       json_build_object (
         'answer_id', a.answer_id,
@@ -24,27 +24,19 @@ module.exports = {
             'url', ap.url
           ))
           FROM answer_photos as ap
-          WHERE answer_id = a.answer_id AND reported < 1
+          WHERE answer_id = a.answer_id AND reported = 0
             )
           )
         ) as results
     FROM answers AS a
-    WHERE question_id = $1
+    WHERE question_id = $4
     GROUP BY a.question_id
     )
-    OFFSET $2
-    LIMIT $4
+    OFFSET 0
+    LIMIT 5
     `;
 
-    const mvQueryString = `
-    SELECT q.question_id::int8 AS question, ${newPage} AS page, ${count} AS count, q.results
-    FROM mv_question as q
-    WHERE question_id = $1
-    OFFSET $2
-    LIMIT $3
-    `;
-
-    return db.query(mvQueryString, [questionId, offset, count]);
+    return db.query(queryString, [questionId, newPage, count, questionId]);
   },
   postAnswer: ({ questionId, body, name, email }) => {
     const queryString = `
@@ -76,3 +68,11 @@ module.exports = {
   },
 };
 // SELECT to_timestamp(cast(q.question_date/1000 as bigint))::date
+
+// const mvQueryString = `
+// SELECT q.question_id::int8 AS question, ${newPage} AS page, ${count} AS count, q.results
+// FROM mv_question as q
+// WHERE question_id = $1
+// OFFSET $2
+// LIMIT $3
+// `;

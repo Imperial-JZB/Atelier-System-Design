@@ -29,7 +29,7 @@ module.exports = {
         FROM answer_photos AS ap
         WHERE answer_id = a.answer_id ))) as answers
         FROM answers AS a
-        WHERE question_id = q.question_id AND reported < 1
+        WHERE question_id = q.question_id AND reported = 1
         )
        )
       )) as results
@@ -51,7 +51,7 @@ module.exports = {
     // each but multiple ones with the same product id, and we want to find
     // info about a certain product_id, so we have to group
     // Show the product_id column, and do an aggregate function WHERE product_id = $1
-    return db.query(mvQueryString, [productId, count, offset]);
+    return db.query(queryString, [productId, count, offset]);
   },
   postQuestions: ({ body, name, email, productId }) => {
     const queryString = `

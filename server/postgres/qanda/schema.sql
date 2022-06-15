@@ -64,7 +64,8 @@ COPY answer_photos(answer_photos_id, answer_id, url) FROM '/Users/brianbui/Deskt
 CREATE INDEX idx_product_id_questions ON questions(product_id);
 CREATE INDEX idx_question_id_answers ON answers(question_id);
 CREATE INDEX idx_answer_id_answer_photos ON answer_photos(answer_id);
-
+CREATE INDEX idx_reported_questions ON questions(reported);
+CREATE INDEX idx_reported_answers ON answers(reported);
 
 -- IMPLEMENTING MATERIALIZED VIEW TABLE QUESTIONS QUERY
 CREATE MATERIALIZED VIEW mv_product
@@ -100,21 +101,21 @@ WITH DATA;
 
 CREATE UNIQUE INDEX mv_product_idx ON mv_product(product_id);
 
-CREATE OR REPLACE FUNCTION tg_refresh_mv_product()
-RETURNS trigger LANGUAGE plpgsql AS $$
-BEGIN
-  REFRESH MATERIALIZED VIEW CONCURRENTLY mv_product;
-  RETURN NULL;
-END;
-$$;
+-- CREATE OR REPLACE FUNCTION tg_refresh_mv_product()
+-- RETURNS trigger LANGUAGE plpgsql AS $$
+-- BEGIN
+--   REFRESH MATERIALIZED VIEW CONCURRENTLY mv_product;
+--   RETURN NULL;
+-- END;
+-- $$;
 
-CREATE TRIGGER tg_refresh_mv_product AFTER INSERT OR UPDATE OR DELETE
-ON questions
-FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_product();
+-- CREATE TRIGGER tg_refresh_mv_product AFTER INSERT OR UPDATE OR DELETE
+-- ON questions
+-- FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_product();
 
-CREATE TRIGGER tg_refresh_mv_product AFTER INSERT OR UPDATE OR DELETE
-ON answers
-FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_product();
+-- CREATE TRIGGER tg_refresh_mv_product AFTER INSERT OR UPDATE OR DELETE
+-- ON answers
+-- FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_product();
 
 
 -- IMPLEMENTING MATERIALIZED VIEW TABLE ANSWERS QUERY
@@ -144,21 +145,21 @@ WITH DATA;
 
 CREATE UNIQUE INDEX mv_question_idx ON mv_question(question_id);
 
-CREATE OR REPLACE FUNCTION tg_refresh_mv_question()
-RETURNS trigger LANGUAGE plpgsql AS $$
-BEGIN
-  REFRESH MATERIALIZED VIEW CONCURRENTLY mv_question;
-  RETURN NULL;
-END;
-$$;
+-- CREATE OR REPLACE FUNCTION tg_refresh_mv_question()
+-- RETURNS trigger LANGUAGE plpgsql AS $$
+-- BEGIN
+--   REFRESH MATERIALIZED VIEW CONCURRENTLY mv_question;
+--   RETURN NULL;
+-- END;
+-- $$;
 
-CREATE TRIGGER tg_refresh_mv_question AFTER INSERT OR UPDATE OR DELETE
-ON questions
-FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_question();
+-- CREATE TRIGGER tg_refresh_mv_question AFTER INSERT OR UPDATE OR DELETE
+-- ON questions
+-- FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_question();
 
-CREATE TRIGGER tg_refresh_mv_question AFTER INSERT OR UPDATE OR DELETE
-ON answers
-FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_question();
+-- CREATE TRIGGER tg_refresh_mv_question AFTER INSERT OR UPDATE OR DELETE
+-- ON answers
+-- FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_question();
 
 -- Questions, do we need to do a periodic update?
 -- Do we need to set triggers on product_id updates?
