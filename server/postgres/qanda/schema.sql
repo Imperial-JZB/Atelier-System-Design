@@ -64,3 +64,102 @@ COPY answer_photos(answer_photos_id, answer_id, url) FROM '/Users/brianbui/Deskt
 CREATE INDEX idx_product_id_questions ON questions(product_id);
 CREATE INDEX idx_question_id_answers ON answers(question_id);
 CREATE INDEX idx_answer_id_answer_photos ON answer_photos(answer_id);
+
+
+-- IMPLEMENTING MATERIALIZED VIEW TABLE QUESTIONS QUERY
+CREATE MATERIALIZED VIEW mv_product
+AS
+ SELECT q.product_id,
+    (
+      SELECT json_agg (
+      json_build_object (
+      'question_id', q.question_id,
+      'question_body', q.question_body,
+      'question_date',(to_char(to_timestamp(q.question_date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
+      'asker_name', q.asker_name,
+      'question_helpfulness', q.question_helpfulness,
+      'reported', q.reported,
+      'answers', (SELECT json_object_agg(a.answer_id,
+        json_build_object (
+          'id', a.answer_id,
+          'body', a.body,
+          'date', (to_char(to_timestamp(a.date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
+          'answerer_name', a.answerer_name,
+          'helpfulness', a.helpfulness,
+          'photos', (SELECT array_agg (ap.url)
+        FROM answer_photos AS ap
+        WHERE answer_id = a.answer_id ))) as answers
+        FROM answers AS a
+        WHERE question_id = q.question_id AND reported < 1
+        )
+       )
+      )) as results
+      FROM questions AS q
+      GROUP BY q.product_id
+WITH DATA;
+
+CREATE UNIQUE INDEX mv_product_idx ON mv_product(product_id);
+
+CREATE OR REPLACE FUNCTION tg_refresh_mv_product()
+RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  REFRESH MATERIALIZED VIEW CONCURRENTLY mv_product;
+  RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER tg_refresh_mv_product AFTER INSERT OR UPDATE OR DELETE
+ON questions
+FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_product();
+
+CREATE TRIGGER tg_refresh_mv_product AFTER INSERT OR UPDATE OR DELETE
+ON answers
+FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_product();
+
+
+-- IMPLEMENTING MATERIALIZED VIEW TABLE ANSWERS QUERY
+CREATE MATERIALIZED VIEW mv_question
+AS
+  SELECT a.question_id,
+    (SELECT json_agg (
+      json_build_object (
+        'answer_id', a.answer_id,
+        'body', a.body,
+        'date', (to_char(to_timestamp(a.date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
+        'answerer_name', a.answerer_name,
+        'helpfulness', a.helpfulness,
+        'photos', (SELECT json_agg (
+          json_build_object (
+            'id', ap.answer_photos_id,
+            'url', ap.url
+          ))
+          FROM answer_photos as ap
+          WHERE answer_id = a.answer_id AND reported < 1
+            )
+          )
+        )) as results
+    FROM answers AS a
+    GROUP BY a.question_id
+WITH DATA;
+
+CREATE UNIQUE INDEX mv_question_idx ON mv_question(question_id);
+
+CREATE OR REPLACE FUNCTION tg_refresh_mv_question()
+RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  REFRESH MATERIALIZED VIEW CONCURRENTLY mv_question;
+  RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER tg_refresh_mv_question AFTER INSERT OR UPDATE OR DELETE
+ON questions
+FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_question();
+
+CREATE TRIGGER tg_refresh_mv_question AFTER INSERT OR UPDATE OR DELETE
+ON answers
+FOR EACH STATEMENT EXECUTE PROCEDURE tg_refresh_mv_question();
+
+-- Questions, do we need to do a periodic update?
+-- Do we need to set triggers on product_id updates?
+-- Currently we're only doing post on questions and answers so we just set triggers there

@@ -2,7 +2,10 @@ const db = require('../../postgres');
 
 module.exports = {
   getQuestions: ({ productId, page, count }) => {
-    const offset = (page - 1) * count;
+    let offset;
+    if (page > 0) {
+      offset = (page - 1) * count;
+    }
 
     const queryString = `
     SELECT q.product_id,
@@ -11,7 +14,7 @@ module.exports = {
       json_build_object (
       'question_id', q.question_id,
       'question_body', q.question_body,
-      'question_date',(SELECT to_timestamp(q.question_date/1000)::date),
+      'question_date',(to_char(to_timestamp(q.question_date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
       'asker_name', q.asker_name,
       'question_helpfulness', q.question_helpfulness,
       'reported', q.reported,
@@ -19,7 +22,7 @@ module.exports = {
         json_build_object (
           'id', a.answer_id,
           'body', a.body,
-          'date', a.date,
+          'date', (to_char(to_timestamp(a.date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
           'answerer_name', a.answerer_name,
           'helpfulness', a.helpfulness,
           'photos', (SELECT array_agg (ap.url)
@@ -35,11 +38,20 @@ module.exports = {
       GROUP BY q.product_id
       LIMIT $2
       OFFSET $3`;
-      // We are in the questions table, where theres a unique question so just one of
-      // each but multiple ones with the same product id, and we want to find
-      // info about a certain product_id, so we have to group
-      // Show the product_id column, and do an aggregate function WHERE product_id = $1
-    return db.query(queryString, [productId, count, offset]);
+
+      const mvQueryString = `
+      SELECT *
+      FROM mv_product
+      WHERE product_id = $1
+      LIMIT $2
+      OFFSET $3
+      `;
+
+    // We are in the questions table, where theres a unique question so just one of
+    // each but multiple ones with the same product id, and we want to find
+    // info about a certain product_id, so we have to group
+    // Show the product_id column, and do an aggregate function WHERE product_id = $1
+    return db.query(mvQueryString, [productId, count, offset]);
   },
   postQuestions: ({ body, name, email, productId }) => {
     const queryString = `

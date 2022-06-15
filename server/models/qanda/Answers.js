@@ -2,14 +2,20 @@ const db = require('../../postgres');
 
 module.exports = {
   getAnswers: async ({ questionId, page, count }) => {
-    const offset = (page - 1) * count;
+    let offset;
+    if (page > 0) {
+      offset = (page - 1) * count;
+    }
+    const questionIdStr = questionId.toString();
+    const newPage = page - 1;
 
     const queryString = `
-    SELECT json_agg (
+    SELECT $3 AS question, ${newPage} AS page, ${count} AS count,
+    (SELECT json_agg (
       json_build_object (
         'answer_id', a.answer_id,
         'body', a.body,
-        'date', (SELECT to_timestamp(a.date/1000)::date),
+        'date', (to_char(to_timestamp(a.date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
         'answerer_name', a.answerer_name,
         'helpfulness', a.helpfulness,
         'photos', (SELECT json_agg (
@@ -25,11 +31,20 @@ module.exports = {
     FROM answers AS a
     WHERE question_id = $1
     GROUP BY a.question_id
+    )
+    OFFSET $2
+    LIMIT $4
+    `;
+
+    const mvQueryString = `
+    SELECT q.question_id::int8 AS question, ${newPage} AS page, ${count} AS count, q.results
+    FROM mv_question as q
+    WHERE question_id = $1
     OFFSET $2
     LIMIT $3
     `;
 
-    return db.query(queryString, [questionId, offset, count]);
+    return db.query(mvQueryString, [questionId, offset, count]);
   },
   postAnswer: ({ questionId, body, name, email }) => {
     const queryString = `
