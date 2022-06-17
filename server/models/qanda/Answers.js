@@ -32,11 +32,11 @@ module.exports = {
     WHERE question_id = $4
     GROUP BY a.question_id
     )
-    OFFSET 0
+    OFFSET $5
     LIMIT 5
     `;
 
-    return db.query(queryString, [questionId, newPage, count, questionId]);
+    return db.query(queryString, [questionId, newPage, count, questionId, offset]);
   },
   postAnswer: ({ questionId, body, name, email }) => {
     const queryString = `
