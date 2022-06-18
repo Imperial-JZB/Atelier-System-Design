@@ -24,12 +24,12 @@ module.exports = {
             'url', ap.url
           ))
           FROM answer_photos as ap
-          WHERE answer_id = a.answer_id AND reported = 0
+          WHERE answer_id = a.answer_id
             )
           )
         ) as results
     FROM answers AS a
-    WHERE question_id = $4
+    WHERE question_id = $4 AND reported = 0
     GROUP BY a.question_id
     )
     OFFSET $5

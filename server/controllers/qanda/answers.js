@@ -9,9 +9,6 @@ module.exports = {
       const params = { questionId, page, count };
       const { rows: results } = await model.answers.getAnswers(params);
 
-      // const resultsAnswers = {
-      //   question: questionId, page: page - 1, count, results: results[0].results,
-      // };
       res.status(200).send(results[0]);
     } catch (err) {
       res.status(400).send(err);

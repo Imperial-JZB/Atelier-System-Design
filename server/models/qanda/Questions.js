@@ -17,35 +17,27 @@ module.exports = {
       'question_date',(to_char(to_timestamp(q.question_date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
       'asker_name', q.asker_name,
       'question_helpfulness', q.question_helpfulness,
-      'reported', q.reported,
-      'answers', (SELECT json_object_agg(a.answer_id,
-        json_build_object (
-          'id', a.answer_id,
-          'body', a.body,
-          'date', (to_char(to_timestamp(a.date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
-          'answerer_name', a.answerer_name,
-          'helpfulness', a.helpfulness,
-          'photos', (SELECT array_agg (ap.url)
-        FROM answer_photos AS ap
-        WHERE answer_id = a.answer_id ))) as answers
-        FROM answers AS a
-        WHERE question_id = q.question_id AND reported = 0
-        )
-       )
+      'reported', q.reported::boolean,
+        'answers', (SELECT json_object_agg(a.answer_id,
+          json_build_object (
+            'id', a.answer_id,
+            'body', a.body,
+            'date', (to_char(to_timestamp(a.date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
+            'answerer_name', a.answerer_name,
+            'helpfulness', a.helpfulness,
+                'photos', (SELECT array_agg (ap.url)
+              FROM answer_photos AS ap
+              WHERE answer_id = a.answer_id ))) as answers
+              FROM answers AS a
+              WHERE question_id = q.question_id
+            )
+         )
       )) as results
       FROM questions AS q
-      WHERE product_id = $1
+      WHERE product_id = $1 AND reported = 0
       GROUP BY q.product_id
       LIMIT $2
       OFFSET $3`;
-
-      const mvQueryString = `
-      SELECT *
-      FROM mv_product
-      WHERE product_id = $1
-      LIMIT $2
-      OFFSET $3
-      `;
 
     // We are in the questions table, where theres a unique question so just one of
     // each but multiple ones with the same product id, and we want to find
