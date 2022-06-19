@@ -8,36 +8,79 @@ module.exports = {
     }
 
     const queryString = `
-    SELECT q.product_id,
-    (
-      SELECT json_agg (
-      json_build_object (
-      'question_id', q.question_id,
-      'question_body', q.question_body,
-      'question_date',(to_char(to_timestamp(q.question_date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
-      'asker_name', q.asker_name,
-      'question_helpfulness', q.question_helpfulness,
-      'reported', q.reported::boolean,
-        'answers', (SELECT json_object_agg(a.answer_id,
-          json_build_object (
-            'id', a.answer_id,
-            'body', a.body,
-            'date', (to_char(to_timestamp(a.date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
-            'answerer_name', a.answerer_name,
-            'helpfulness', a.helpfulness,
-                'photos', (SELECT array_agg (ap.url)
-              FROM answer_photos AS ap
-              WHERE answer_id = a.answer_id ))) as answers
-              FROM answers AS a
-              WHERE question_id = q.question_id
+      SELECT
+        Q.PRODUCT_ID,
+        (
+          SELECT
+            JSON_AGG (
+              JSON_BUILD_OBJECT (
+                'question_id',
+                Q.QUESTION_ID,
+                'question_body',
+                Q.QUESTION_BODY,
+                'question_date',
+                (
+                  TO_CHAR(
+                    TO_TIMESTAMP(Q.QUESTION_DATE / 1000),
+                    'yyyy-MM-dd"T"00:00:00.000Z'
+                  )
+                ),
+                'asker_name',
+                Q.ASKER_NAME,
+                'question_helpfulness',
+                Q.QUESTION_HELPFULNESS,
+                'reported',
+                Q.REPORTED :: boolean,
+                'answers',
+                (
+                  SELECT
+                    JSON_OBJECT_AGG(
+                      A.ANSWER_ID,
+                      JSON_BUILD_OBJECT (
+                        'id',
+                        A.ANSWER_ID,
+                        'body',
+                        A.BODY,
+                        'date',
+                        (
+                          TO_CHAR(
+                            TO_TIMESTAMP(A.DATE / 1000),
+                            'yyyy-MM-dd"T"00:00:00.000Z'
+                          )
+                        ),
+                        'answerer_name',
+                        A.ANSWERER_NAME,
+                        'helpfulness',
+                        A.HELPFULNESS,
+                        'photos',
+                        (
+                          SELECT
+                            ARRAY_AGG (AP.URL)
+                          FROM
+                            ANSWER_PHOTOS AS AP
+                          WHERE
+                            ANSWER_ID = A.ANSWER_ID
+                        )
+                      )
+                    ) AS ANSWERS
+                  FROM
+                    ANSWERS AS A
+                  WHERE
+                    QUESTION_ID = Q.QUESTION_ID
+                )
+              )
             )
-         )
-      )) as results
-      FROM questions AS q
-      WHERE product_id = $1 AND reported = 0
-      GROUP BY q.product_id
-      LIMIT $2
-      OFFSET $3`;
+        ) AS RESULTS
+      FROM
+        QUESTIONS AS Q
+      WHERE
+        PRODUCT_ID = $1
+        AND REPORTED = 0
+      GROUP BY
+        Q.PRODUCT_ID
+      LIMIT
+        $2 OFFSET $3
+      `;
 
     // We are in the questions table, where theres a unique question so just one of
     // each but multiple ones with the same product id, and we want to find
