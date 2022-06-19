@@ -1,6 +1,4 @@
-exports.products = require('./products.js');
-exports.reviews = require('./reviews.js');
-
+exports.products = require('./products');
 exports.reviews = require('./reviews');
 
 // Q and A

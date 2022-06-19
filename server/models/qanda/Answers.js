@@ -10,30 +10,55 @@ module.exports = {
     const newPage = page - 1;
 
     const queryString = `
-    SELECT $1 AS question, $2::int AS page, $3::int AS count,
-    (SELECT json_agg (
-      json_build_object (
-        'answer_id', a.answer_id,
-        'body', a.body,
-        'date', (to_char(to_timestamp(a.date / 1000), 'yyyy-MM-dd"T"00:00:00.000Z')),
-        'answerer_name', a.answerer_name,
-        'helpfulness', a.helpfulness,
-        'photos', (SELECT json_agg (
-          json_build_object (
-            'id', ap.answer_photos_id,
-            'url', ap.url
-          ))
-          FROM answer_photos as ap
-          WHERE answer_id = a.answer_id
+      SELECT
+      $1 AS question,
+      $2 :: int AS page,
+      $3 :: int AS count,
+      (
+        SELECT
+          json_agg (
+            json_build_object (
+              'answer_id',
+              a.answer_id,
+              'body',
+              a.body,
+              'date',
+              (
+                to_char(
+                  to_timestamp(a.date / 1000),
+                  'yyyy-MM-dd"T"00:00:00.000Z'
+                )
+              ),
+              'answerer_name',
+              a.answerer_name,
+              'helpfulness',
+              a.helpfulness,
+              'photos',
+              (
+                SELECT
+                  json_agg (
+                    json_build_object (
+                      'id', ap.answer_photos_id, 'url',
+                      ap.url
+                    )
+                  )
+                FROM
+                  answer_photos as ap
+                WHERE
+                  answer_id = a.answer_id
+              )
             )
-          )
-        ) as results
-    FROM answers AS a
-    WHERE question_id = $4 AND reported = 0
-    GROUP BY a.question_id
-    )
-    OFFSET $5
-    LIMIT 5
+          ) as results
+        FROM
+          answers AS a
+        WHERE
+          question_id = $4
+          AND reported = 0
+        GROUP BY
+          a.question_id
+      ) OFFSET $5
+    LIMIT
+      5
     `;
 
     return db.query(queryString, [questionId, newPage, count, questionId, offset]);
